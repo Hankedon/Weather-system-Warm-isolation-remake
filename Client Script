@@ -1,0 +1,25 @@
+local HttpService = game:GetService("HttpService")
+local TextLabel = script.Parent
+
+local proxyUrl = "https://hickory-shocking-vest.glitch.me/country" -- The correct endpoint
+
+local function getCountryAndWeather()
+    local success, response = pcall(function()
+        return HttpService:GetAsync(proxyUrl)
+    end)
+
+    if success then
+        local data = HttpService:JSONDecode(response)
+        local country = data.country or "Unknown"
+        local temperature = data.temperature or "N/A"
+        local weather = data.weather or "N/A"
+
+        -- Display the country and weather
+        TextLabel.Text = "Region: " .. country .. " Temperature: " .. temperature .. "°C Weather: " .. weather
+    else
+        warn("Failed to get data: " .. response)
+        TextLabel.Text = "Region: Unknown, Temperature: N/A, Weather: N/A"
+    end
+end
+
+getCountryAndWeather()
