@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Get Player Country</title>
+    <script>
+      async function getPlayerCountry() {
+        try {
+          const response = await fetch("/country");
+          const data = await response.json();
+          const country = data.country;
+​
+          document.body.innerHTML += `<p>Your country is: ${country}</p>`;
+        } catch (error) {
+          console.error("Error getting country: ", error);
+        }
+      }
+​
+      window.onload = getPlayerCountry;
+    </script>
+  </head>
+  <body>
+    <h1>Fetching your country...</h1>
+  </body>
+</html>
+​
