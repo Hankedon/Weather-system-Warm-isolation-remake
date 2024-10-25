@@ -1,0 +1,45 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local PrivateServerOwner = game.PrivateServerOwnerId
+
+local function onPlayerChatted(player, message)
+	if game.PrivateServerId ~= "" and player.UserId == PrivateServerOwner then
+		if message:sub(1, 5) == "/kick" then
+			local targetPlayerName = message:sub(7)
+			local targetPlayer = Players:FindFirstChild(targetPlayerName)
+			if targetPlayer then
+				targetPlayer:Kick("You have been kicked by the server owner.")
+			end
+		elseif message == "/shutdown" then
+			for _, plr in pairs(Players:GetPlayers()) do
+				plr:Kick("Server has been shut down by the owner.")
+			end
+		elseif message:sub(1, 7) == "/freeze" then
+			local targetPlayerName = message:sub(9)
+			local targetPlayer = Players:FindFirstChild(targetPlayerName)
+			if targetPlayer and targetPlayer.Character then
+				targetPlayer.Character.HumanoidRootPart.Anchored = true
+			end
+		elseif message:sub(1, 5) == "/kill" then
+			local targetPlayerName = message:sub(7)
+			local targetPlayer = Players:FindFirstChild(targetPlayerName)
+			if targetPlayer and targetPlayer.Character then
+				targetPlayer.Character.Humanoid.Health = 0
+			end
+		elseif message:sub(1, 9) == "/unfreeze" then
+			local targetPlayerName = message:sub(11)
+			local targetPlayer = Players:FindFirstChild(targetPlayerName)
+			if targetPlayer and targetPlayer.Character then
+				targetPlayer.Character.HumanoidRootPart.Anchored = false
+			end
+		elseif message == "/commands" then
+			ReplicatedStorage.ShowCommands:FireClient(player, "/kick [player], /shutdown, /freeze [player], /kill [player], /unfreeze [player]")
+		end
+	end
+end
+
+Players.PlayerAdded:Connect(function(player)
+	player.Chatted:Connect(function(message)
+		onPlayerChatted(player, message)
+	end)
+end)
